@@ -1,18 +1,35 @@
 #!/usr/bin/python3
-"""Gather data from an API and display employee TODO list progress."""
+"""
+gathing data from an api
+"""
 import requests
 import sys
 
 if __name__ == "__main__":
-    employee_id = int(sys.argv[1])
-    base_url = "https://jsonplaceholder.typicode.com"
-    user = requests.get("{}/users/{}".format(base_url, employee_id)).json()
-    todos = requests.get("{}/todos?userId={}".format(
-        base_url, employee_id)).json()
-    name = user.get("name")
-    total = len(todos)
-    done = [t for t in todos if t.get("completed") is True]
-    print("Employee {} is done with tasks({}/{}):".format(
-        name, len(done), total))
-    for task in done:
-        print("\t {}".format(task.get("title")))
+    user_id = int(sys.argv[1])
+
+    r1 = requests.get("https://jsonplaceholder.typicode.com/users")
+
+    users = r1.json()
+
+    r2 = requests.get("https://jsonplaceholder.typicode.com/todos")
+
+    todos = r2.json()
+
+    for user in users:
+        if user.get("id") == user_id:
+            name = user.get("name")
+
+    total = 0
+    done = 0
+    task_done = []
+    for todo in todos:
+        if todo.get("userId") == user_id:
+            total += 1
+            if todo.get("completed"):
+                task_done.append(todo.get("title"))
+                done += 1
+
+    print(f"Employee {name} is done with tasks({done}/{total}):")
+    for task in task_done:
+        print(f"\t {task}")
