@@ -6,22 +6,24 @@ JSONPlaceholder (https://jsonplaceholder.typicode.com).
 import requests
 import sys
 
-employee_id = int(sys.argv[1])
 
-base = "https://jsonplaceholder.typicode.com"
+if __name__ == "__main__":
+    employee_id = int(sys.argv[1])
 
-user = requests.get(
-    "{}/users/{}".format(base, employee_id)).json()
-employee_name = user.get("name")
+    base = "https://jsonplaceholder.typicode.com"
 
-todos = requests.get(
-    "{}/todos".format(base),
-    params={"userId": employee_id}).json()
+    user = requests.get(
+        "{}/users/{}".format(base, employee_id)).json()
+    employee_name = user.get("name")
 
-completed = [t for t in todos if t.get("completed")]
+    todos = requests.get(
+        "{}/todos".format(base),
+        params={"userId": employee_id}).json()
 
-print("Employee {} is done with tasks({}/{}):".format(
-    employee_name, len(completed), len(todos)))
+    completed = [t for t in todos if t.get("completed")]
 
-for task in completed:
-    print("\t {}".format(task.get("title")))
+    print("Employee {} is done with tasks({}/{}):".format(
+        employee_name, len(completed), len(todos)))
+
+    for task in completed:
+        print("\t {}".format(task.get("title")))
