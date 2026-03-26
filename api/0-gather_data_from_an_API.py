@@ -3,8 +3,9 @@
 Fetches and displays TODO list progress for a given employee ID from
 JSONPlaceholder (https://jsonplaceholder.typicode.com).
 """
-import requests
+import json
 import sys
+import urllib.request
 
 
 if __name__ == "__main__":
@@ -12,13 +13,14 @@ if __name__ == "__main__":
 
     base = "https://jsonplaceholder.typicode.com"
 
-    user = requests.get(
-        "{}/users/{}".format(base, employee_id)).json()
+    user_url = "{}/users/{}".format(base, employee_id)
+    with urllib.request.urlopen(user_url) as response:
+        user = json.loads(response.read().decode())
     employee_name = user.get("name")
 
-    todos = requests.get(
-        "{}/todos".format(base),
-        params={"userId": employee_id}).json()
+    todos_url = "{}/todos?userId={}".format(base, employee_id)
+    with urllib.request.urlopen(todos_url) as response:
+        todos = json.loads(response.read().decode())
 
     completed = [t for t in todos if t.get("completed")]
 
